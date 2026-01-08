@@ -8,9 +8,8 @@ st.set_page_config(page_title="Rachadinha Churrasco", page_icon="🍖")
 # --- LINKS E DADOS ---
 url_imagem = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
 
-# Link do YouTube (Embed da Playlist Bruno & Marrone)
-# O código abaixo pega o ID do vídeo e da playlist que você mandou
-youtube_embed = "https://www.youtube.com/embed/98BMxJU1AGw?list=RDEMilQ9enpeArgd2xuJvt9ATw&autoplay=0"
+# Link do YouTube (Mix "Dormi na Praça" - Gera uma playlist aleatória de sucessos)
+youtube_mix = "https://www.youtube.com/embed/uWX0O8ATY3k?list=RDuWX0O8ATY3k"
 
 pix_dict = {
     "Guy": "064.266.399-82",
@@ -72,10 +71,10 @@ st.markdown(css_fundo, unsafe_allow_html=True)
 # --- TÍTULO ---
 st.title("🍖 Rachadinha dos amigos 🍖")
 
-# --- PLAYER DO YOUTUBE (MODO SEGURO) ---
-st.markdown("### 🎵 Som na Caixa")
-# Iframe do YouTube
-html_youtube = '<iframe width="100%" height="250" src="' + youtube_embed + '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="border-radius: 12px;"></iframe>'
+# --- PLAYER DO YOUTUBE (MIX BRUNO & MARRONE) ---
+st.markdown("### 🎵 Som na Caixa: As Melhores")
+# Iframe configurado para playlist Mix
+html_youtube = '<iframe width="100%" height="300" src="' + youtube_mix + '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="border-radius: 12px;"></iframe>'
 st.markdown(html_youtube, unsafe_allow_html=True)
 
 # 4. CONFIGURAÇÃO
