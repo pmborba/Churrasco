@@ -2,20 +2,20 @@ import streamlit as st
 import urllib.parse
 from datetime import datetime
 
-# Configuração da página
+# 1. Configuração da página
 st.set_page_config(page_title="Rachadinha Churrasco", page_icon="🍖")
 
-# Link da sua foto no GitHub
+# 2. Link da imagem de fundo
 fundo_url = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
 
-# --- BANCO DE DADOS DE CHAVES PIX ---
-chaves_cadastradas = {
+# 3. Banco de Dados Pix
+chaves_pix = {
     "Guy": "064.266.399-82",
     "Thi": "064.514.089-99",
     "Paulinho": "085.994.129-90"
 }
 
-# --- ESTILO VISUAL (FOTO CENTRALIZADA E TRANSPARÊNCIA) ---
+# 4. Estilo Visual (CSS) - Foto Centralizada e Transparência
 st.markdown(
     f"""
     <style>
@@ -48,87 +48,83 @@ st.markdown(
 
 st.title("🍖 Rachadinha dos amigos 🍖")
 
-# --- SELEÇÃO DE LOCAL ---
+# 5. Seleção de Anfitrião
 st.subheader("🏠 Local do churras?")
-local_selecionado = st.selectbox("Anfitrião:", ["Guy", "Thi", "Paulinho"])
-chave_pix_atual = chaves_cadastradas.get(local_selecionado, "")
+anfitriao = st.selectbox("Quem é o anfitrião?", ["Guy", "Thi", "Paulinho"])
+chave_final = chaves_pix.get(anfitriao)
 
-# --- PARTICIPANTES FIXOS ---
+# 6. Participantes Fixos
 st.subheader("👥 Quem participou?")
 col_f1, col_f2 = st.columns(2)
 with col_f1:
-    vai_guy = st.checkbox("Família Guy", value=True)
-    vai_thi = st.checkbox("Família Thi", value=True)
+    v_guy = st.checkbox("Família Guy", value=True)
+    v_thi = st.checkbox("Família Thi", value=True)
 with col_f2:
-    vai_paulinho = st.checkbox("Família Paulinho", value=True)
-    vai_jorge = st.checkbox("Jorge", value=True)
+    v_pau = st.checkbox("Família Paulinho", value=True)
+    v_jor = st.checkbox("Jorge", value=True)
 
-# --- CONVIDADOS EXTRAS ---
+# 7. Convidados Extras
 st.markdown("---")
-st.write("👤 **Adicionar Convidados?**")
+st.write("👤 **Convidados Extras**")
+c_col1, c_col2 = st.columns([2, 1])
+with c_col1:
+    nome_c1 = st.text_input("Nome Convidado 1", key="n1")
+    nome_c2 = st.text_input("Nome Convidado 2", key="n2")
+with c_col2:
+    tipo_c1 = st.selectbox("Cota 1", ["Ninguém", "Individual", "Casal"], key="t1")
+    tipo_c2 = st.selectbox("Cota 2", ["Ninguém", "Individual", "Casal"], key="t2")
 
-col_c1a, col_c1b = st.columns([2, 1])
-with col_c1a:
-    nome_c1 = st.text_input("Nome do convidado 1:", key="nc1")
-with col_c1b:
-    tipo_c1 = st.selectbox("Cota 1:", ["Ninguém", "Individual (1 cota)", "Casal (2 cotas)"], key="tc1")
+# 8. Lógica de Cotas
+total_cotas = 0
+if v_guy: total_cotas += 2
+if v_thi: total_cotas += 2
+if v_pau: total_cotas += 2
+if v_jor: total_cotas += 1
 
-col_c2a, col_c2b = st.columns([2, 1])
-with col_c2a:
-    nome_c2 = st.text_input("Nome do convidado 2:", key="nc2")
-with col_c2b:
-    tipo_c2 = st.selectbox("Cota 2:", ["Ninguém", "Individual (1 cota)", "Casal (2 cotas)"], key="tc2")
+qtd_c1 = 0
+if nome_c1 and tipo_c1 != "Ninguém":
+    qtd_c1 = 1 if tipo_c1 == "Individual" else 2
+    total_cotas += qtd_c1
 
-# Lógica de Cotagem de Cotas
-cotas_totais = 0
-if vai_guy: cotas_totais += 2
-if vai_thi: cotas_totais += 2
-if vai_paulinho: cotas_totais += 2
-if vai_jorge: cotas_totais += 1
+qtd_c2 = 0
+if nome_c2 and tipo_c2 != "Ninguém":
+    qtd_c2 = 1 if tipo_c2 == "Individual" else 2
+    total_cotas += qtd_c2
 
-# Processamento Convidados
-c1_qtd = 0
-if nome_c1 and "Ninguém" not in tipo_c1:
-    c1_qtd = 1 if "Individual" in tipo_c1 else 2
-    cotas_totais += c1_qtd
-
-c2_qtd = 0
-if nome_c2 and "Ninguém" not in tipo_c2:
-    c2_qtd = 1 if "Individual" in tipo_c2 else 2
-    cotas_totais += c2_qtd
-
-# --- LANÇAMENTO DE GASTOS ---
+# 9. Lançamento de Valores
 st.subheader("📝 Lançar Valores")
 itens = ["Carne", "Pão de alho", "Linguiça", "Cerveja", "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros"]
 col_v1, col_v2 = st.columns(2)
-gastos = {}
+v_gastos = {}
 
-for idx, item in enumerate(itens):
-    with col_v1 if idx % 2 == 0 else col_v2:
-        gastos[item] = st.number_input(f"{item}", min_value=0.0, step=5.0, format="%.2f")
+for i, item in enumerate(itens):
+    with col_v1 if i % 2 == 0 else col_v2:
+        v_gastos[item] = st.number_input(f"{item}", min_value=0.0, step=5.0, format="%.2f")
 
-total_geral = sum(gastos.values())
+total_geral = sum(v_gastos.values())
 
-# --- BLOCO FINAL DE RESUMO (SÓ APARECE SE TIVER VALOR) ---
+# 10. BLOCO DE RESULTADOS (Só aparece se houver valor)
 if total_geral > 0:
     st.divider()
-    st.header(f"Total Geral: R$ {total_geral:.2f}")
+    st.header(f"Total: R$ {total_geral:.2f}")
     
-    if cotas_totais > 0:
-        v_por_cota = total_geral / cotas_totais
+    if total_cotas > 0:
+        valor_cota = total_geral / total_cotas
         
-        # Resultados em boxes azuis
-        res_col1, res_col2 = st.columns(2)
-        with res_col1:
-            if vai_guy: st.info(f"Família Guy: R$ {v_por_cota*2:.2f}")
-            if vai_thi: st.info(f"Família Thi: R$ {v_por_cota*2:.2f}")
-            if c1_qtd > 0: st.info(f"{nome_c1}: R$ {v_por_cota * c1_qtd:.2f}")
-        with res_col2:
-            if vai_paulinho: st.info(f"Família Paulinho: R$ {v_por_cota*2:.2f}")
-            if vai_jorge: st.info(f"Jorge: R$ {v_por_cota:.2f}")
-            if c2_qtd > 0: st.info(f"{nome_c2}: R$ {v_por_cota * c2_qtd:.2f}")
+        # Blocos Azuis
+        res1, res2 = st.columns(2)
+        with res1:
+            if v_guy: st.info(f"Família Guy: R$ {valor_cota*2:.2f}")
+            if v_thi: st.info(f"Família Thi: R$ {valor_cota*2:.2f}")
+            if qtd_c1 > 0: st.info(f"{nome_c1}: R$ {valor_cota*qtd_c1:.2f}")
+        with res2:
+            if v_pau: st.info(f"Família Paulinho: R$ {valor_cota*2:.2f}")
+            if v_jor: st.info(f"Jorge: R$ {valor_cota:.2f}")
+            if qtd_c2 > 0: st.info(f"{nome_c2}: R$ {valor_cota*qtd_c2:.2f}")
 
-        # --- PREPARAÇÃO DA MENSAGEM WHATSAPP ---
+        # Texto para WhatsApp
         hoje = datetime.now().strftime("%d/%m/%Y")
-        resumo_texto = f"🍖 *CHURRASCO DO {local_selecionado.upper()}* 🍖\n📅 Data: {hoje}\n\n"
-        resumo_texto += f"💰 *Total: R$ {total_geral:.2f}*\
+        resumo = f"🍖 *CHURRASCO DO {anfitriao.upper()}* 🍖\n📅 Data: {hoje}\n\n"
+        resumo += f"💰 *Total: R$ {total_geral:.2f}*\n\n"
+        
+        if v_guy: resumo += f"👨‍👩‍👧‍👦 Família Guy: R$ {valor_cota*2:.2f}\n
