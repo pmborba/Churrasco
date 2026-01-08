@@ -41,15 +41,6 @@ st.markdown(
         color: black !important;
         -webkit-text-fill-color: black !important;
     }}
-    .pix-box {{
-        background-color: rgba(255, 255, 255, 0.3);
-        padding: 10px;
-        border-radius: 10px;
-        color: black;
-        font-weight: bold;
-        text-align: center;
-        margin-top: 5px;
-    }}
     </style>
     """,
     unsafe_allow_html=True
@@ -57,16 +48,11 @@ st.markdown(
 
 st.title("🍖 Rachadinha dos amigos 🍖")
 
-# --- SELEÇÃO DE LOCAL E PIX ---
+# --- SELEÇÃO DE LOCAL ---
 st.subheader("🏠 Local do churras?")
-col_local, col_pix_info = st.columns([1, 1.5])
-
-with col_local:
-    local_selecionado = st.selectbox("Anfitrião:", ["Guy", "Thi", "Paulinho"])
-
-with col_pix_info:
-    chave_pix = chaves_cadastradas.get(local_selecionado, "")
-    st.markdown(f'<p style="margin-bottom: 0px;">Pix para Pagamento:</p><div class="pix-box">{chave_pix}</div>', unsafe_allow_html=True)
+# Aqui mudou: Apenas seleciona o anfitrião e guarda a chave na variável, sem mostrar na tela
+local_selecionado = st.selectbox("Anfitrião:", ["Guy", "Thi", "Paulinho"])
+chave_pix = chaves_cadastradas.get(local_selecionado, "")
 
 # --- PARTICIPANTES FIXOS ---
 st.subheader("👥 Quem participou?")
