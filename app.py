@@ -19,30 +19,27 @@ st.markdown(
         background-attachment: fixed;
     }}
     
-    /* Padronização dos textos */
     h1, h2, h3, p, label {{
         color: white !important;
         text-shadow: 2px 2px 4px #000000;
-        font-family: 'sans-serif';
     }}
 
-    /* Caixas de seleção e Inputs padronizados */
-    .stCheckbox, div[data-baseweb="radio"], .stNumberInput, .stTextArea textarea {{
+    /* Caixas de seleção, Inputs e Chave Pix */
+    .stCheckbox, div[data-baseweb="select"], .stNumberInput, .stTextArea textarea, .stTextInput input {{
         background-color: rgba(255, 255, 255, 0.2) !important;
         border-radius: 10px !important;
-        padding: 10px !important;
-        margin-bottom: 10px !important;
-    }}
-
-    /* Fonte preta apenas onde há inserção de dados para contraste */
-    input, textarea, span[data-baseweb="tag"] {{
         color: black !important;
         font-weight: bold !important;
     }}
-    
-    /* Ajuste para não sobrepor ícones de rádio */
-    div[role="radiogroup"] {{
-        gap: 15px;
+
+    /* Ajuste específico para o campo de texto da chave Pix */
+    .stTextInput div div {{
+        background-color: rgba(255, 255, 255, 0.3) !important;
+        border-radius: 10px !important;
+    }}
+
+    input {{
+        color: black !important;
     }}
     </style>
     """,
@@ -51,14 +48,17 @@ st.markdown(
 
 st.title("🍖 Rachadinha dos amigos")
 
-# --- SELEÇÃO DE LOCAL ---
+# --- SELEÇÃO DE LOCAL E PIX ---
 st.subheader("🏠 Onde é o churrasco?")
-local_selecionado = st.selectbox(
-    "Selecione o anfitrião:",
-    ["Guy", "Thi", "Paulinho"]
-)
+col_local, col_pix = st.columns([1, 1.5])
 
-# --- PARTICIPANTES (ORGANIZADOS EM COLUNAS IGUAIS) ---
+with col_local:
+    local_selecionado = st.selectbox("Anfitrião:", ["Guy", "Thi", "Paulinho"])
+
+with col_pix:
+    chave_pix = st.text_input("Chave Pix para pgto:", placeholder="Celular, CPF ou Aleatória")
+
+# --- PARTICIPANTES ---
 st.subheader("👥 Quem participou?")
 col1, col2 = st.columns(2)
 
@@ -71,17 +71,15 @@ with col2:
 
 # Lógica de Cotas
 cotas = 0
-lista_presentes = []
-if vai_guy: cotas += 2; lista_presentes.append("Guy")
-if vai_thi: cotas += 2; lista_presentes.append("Thi")
-if vai_paulinho: cotas += 2; lista_presentes.append("Paulinho")
-if vai_jorge: cotas += 1; lista_presentes.append("Jorge")
+if vai_guy: cotas += 2
+if vai_thi: cotas += 2
+if vai_paulinho: cotas += 2
+if vai_jorge: cotas += 1
 
 # --- GASTOS ---
 st.subheader("📝 Lançar Valores")
 itens = ["Carne", "Pão de alho", "Linguiça", "Cerveja", "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros"]
 
-# Organizando os campos de valores em 2 colunas para economizar espaço no celular
 col_v1, col_v2 = st.columns(2)
 gastos = {}
 
@@ -97,7 +95,6 @@ if total > 0 and cotas > 0:
     st.divider()
     st.metric("TOTAL GERAL", f"R$ {total:.2f}")
 
-    # Exibição organizada
     res1, res2 = st.columns(2)
     with res1:
         if vai_guy: st.info(f"Família Guy: R$ {valor_cota*2:.2f}")
@@ -110,20 +107,29 @@ if total > 0 and cotas > 0:
     data = datetime.now().strftime("%d/%m/%Y")
     resumo = f"🍖 *CHURRASCO DO {local_selecionado.upper()}* 🍖\n📅 Data: {data}\n\n"
     resumo += f"💰 *Total: R$ {total:.2f}*\n\n"
+    
     if vai_guy: resumo += f"🔹 Família Guy: R$ {valor_cota*2:.2f}\n"
     if vai_thi: resumo += f"🔹 Família Thi: R$ {valor_cota*2:.2f}\n"
     if vai_paulinho: resumo += f"🔹 Família Paulinho: R$ {valor_cota*2:.2f}\n"
     if vai_jorge: resumo += f"🔸 Jorge: R$ {valor_cota:.2f}\n"
-    resumo += f"\n📍 Pix: SUA_CHAVE_AQUI"
+    
+    if chave_pix:
+        resumo += f"\n📍 *Pix para pagamento:*\n{chave_pix}"
+    else:
+        resumo += f"\n📍 *Pix para pagamento:* (Combinar no grupo)"
 
     st.subheader("📲 Enviar Resumo")
-    st.text_area("Confira o texto:", resumo, height=150)
+    st.text_area("Confira o texto:", resumo, height=200)
     
     link_zap = f"https://api.whatsapp.com/send?text={urllib.parse.quote(resumo)}"
     
     st.markdown(f"""
         <a href="{link_zap}" target="_blank" style="text-decoration: none;">
-            <div style="width: 100%; background-color: #25D366; color: white; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 18px;">
+            <div style="width: 100%; background-color: #25D366; color: white; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
                 🚀 ENVIAR PARA WHATSAPP
             </div>
         </a>""", unsafe_allow_html=True)
+elif total > 0 and cotas == 0:
+    st.error("Selecione quem participou!")
+else:
+    st.write("Aguardando lançamento de valores...")
