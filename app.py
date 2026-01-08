@@ -2,20 +2,21 @@ import streamlit as st
 import urllib.parse
 from datetime import datetime
 
-# Configuração da página
+# 1. Configuração inicial
 st.set_page_config(page_title="Rachadinha Churrasco", page_icon="🍖")
 
-# Link da sua foto no GitHub
+# 2. Imagem de fundo e Playlist Spotify
 fundo_url = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
+spotify_playlist = "https://open.spotify.com/embed/playlist/37i9dQZF1DX10zKzsJ2jva?utm_source=generator" # Playlist Pagode
 
-# --- BANCO DE DADOS DE CHAVES PIX ---
-chaves_cadastradas = {
+# 3. Banco de Dados Pix
+chaves_pix = {
     "Guy": "064.266.399-82",
     "Thi": "064.514.089-99",
     "Paulinho": "085.994.129-90"
 }
 
-# --- ESTILO VISUAL (FOTO CENTRALIZADA E TRANSPARÊNCIA) ---
+# 4. Estilo Visual (CSS)
 st.markdown(
     f"""
     <style>
@@ -31,7 +32,8 @@ st.markdown(
         color: white !important;
         text-shadow: 2px 2px 4px #000000;
     }}
-    .stCheckbox, div[data-baseweb="select"], .stNumberInput, .stTextArea textarea, .stTextInput input, .stSelectbox div {{
+    /* Estilo dos Inputs */
+    .stCheckbox, div[data-baseweb="select"], .stNumberInput, .stTextArea textarea, .stTextInput input, .stSelectbox div, .stDateInput div {{
         background-color: rgba(255, 255, 255, 0.3) !important;
         border-radius: 10px !important;
         color: black !important;
@@ -41,6 +43,13 @@ st.markdown(
         color: black !important;
         -webkit-text-fill-color: black !important;
     }}
+    /* Ajuste para o Expander (Lista de itens) */
+    .streamlit-expanderHeader {{
+        background-color: rgba(255, 255, 255, 0.4) !important;
+        color: black !important;
+        border-radius: 10px;
+        font-weight: bold;
+    }}
     </style>
     """,
     unsafe_allow_html=True
@@ -48,107 +57,117 @@ st.markdown(
 
 st.title("🍖 Rachadinha dos amigos 🍖")
 
-# --- SELEÇÃO DE LOCAL ---
-st.subheader("🏠 Local do churras?")
-# Aqui mudou: Apenas seleciona o anfitrião e guarda a chave na variável, sem mostrar na tela
-local_selecionado = st.selectbox("Anfitrião:", ["Guy", "Thi", "Paulinho"])
-chave_pix = chaves_cadastradas.get(local_selecionado, "")
+# 5. Player de Música (Spotify)
+st.markdown(f'<iframe style="border-radius:12px" src="{spotify_playlist}" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>', unsafe_allow_html=True)
 
-# --- PARTICIPANTES FIXOS ---
+# 6. Seleção de Anfitrião e Data
+st.subheader("🏠 Dados do Evento")
+col_local, col_data = st.columns(2)
+with col_local:
+    anfitriao = st.selectbox("Anfitrião:", ["Guy", "Thi", "Paulinho"])
+    chave_final = chaves_pix.get(anfitriao)
+with col_data:
+    data_evento = st.date_input("Data:", datetime.now())
+
+# 7. Participantes Fixos
 st.subheader("👥 Quem participou?")
 col_f1, col_f2 = st.columns(2)
 with col_f1:
-    vai_guy = st.checkbox("Família Guy", value=True)
-    vai_thi = st.checkbox("Família Thi", value=True)
+    v_guy = st.checkbox("Família Guy", value=True)
+    v_thi = st.checkbox("Família Thi", value=True)
 with col_f2:
-    vai_paulinho = st.checkbox("Família Paulinho", value=True)
-    vai_jorge = st.checkbox("Jorge", value=True)
+    v_pau = st.checkbox("Família Paulinho", value=True)
+    v_jor = st.checkbox("Jorge", value=True)
 
-# --- CONVIDADOS EXTRAS ---
+# 8. Convidados Extras
 st.markdown("---")
-st.write("👤 **Adicionar Convidados?**")
-
-col_c1a, col_c1b = st.columns([2, 1])
-with col_c1a:
-    nome_c1 = st.text_input("Nome do convidado 1:", key="nc1")
-with col_c1b:
-    tipo_c1 = st.selectbox("Cota 1:", ["Ninguém", "Individual (1 cota)", "Casal (2 cotas)"], key="tc1")
-
-col_c2a, col_c2b = st.columns([2, 1])
-with col_c2a:
-    nome_c2 = st.text_input("Nome do convidado 2:", key="nc2")
-with col_c2b:
-    tipo_c2 = st.selectbox("Cota 2:", ["Ninguém", "Individual (1 cota)", "Casal (2 cotas)"], key="tc2")
+st.write("👤 **Convidados Extras**")
+c_col1, c_col2 = st.columns([2, 1])
+with c_col1:
+    n1 = st.text_input("Nome Convidado 1", key="nome1")
+    n2 = st.text_input("Nome Convidado 2", key="nome2")
+with c_col2:
+    t1 = st.selectbox("Cota 1", ["Ninguém", "Individual", "Casal"], key="tipo1")
+    t2 = st.selectbox("Cota 2", ["Ninguém", "Individual", "Casal"], key="tipo2")
 
 # Lógica de Cotas
-cotas = 0
-if vai_guy: cotas += 2
-if vai_thi: cotas += 2
-if vai_paulinho: cotas += 2
-if vai_jorge: cotas += 1
+total_cotas = 0
+if v_guy: total_cotas += 2
+if v_thi: total_cotas += 2
+if v_pau: total_cotas += 2
+if v_jor: total_cotas += 1
 
-c1_val = 0
-if nome_c1 and tipo_c1 != "Ninguém":
-    c1_val = 1 if "Individual" in tipo_c1 else 2
-    cotas += c1_val
+val_c1 = 0
+if n1 and t1 != "Ninguém":
+    val_c1 = 1 if t1 == "Individual" else 2
+    total_cotas += val_c1
 
-c2_val = 0
-if nome_c2 and tipo_c2 != "Ninguém":
-    c2_val = 1 if "Individual" in tipo_c2 else 2
-    cotas += c2_val
+val_c2 = 0
+if n2 and t2 != "Ninguém":
+    val_c2 = 1 if t2 == "Individual" else 2
+    total_cotas += val_c2
 
-# --- LANÇAMENTO DE GASTOS ---
+# 9. Lançamento de Valores (COM EXPANDER)
 st.subheader("📝 Lançar Valores")
-itens = ["Carne", "Pão de alho", "Linguiça", "Cerveja", "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros"]
-col_v1, col_v2 = st.columns(2)
-gastos = {}
-for i, item in enumerate(itens):
-    with col_v1 if i % 2 == 0 else col_v2:
-        gastos[item] = st.number_input(f"{item}", min_value=0.0, step=5.0, format="%.2f")
 
-total = sum(gastos.values())
+# Aqui está a mágica: O expander esconde a lista grande
+with st.expander("Clique aqui para abrir a lista de itens 👇"):
+    itens = ["Carne", "Pão de alho", "Linguiça", "Cerveja", "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros"]
+    col_v1, col_v2 = st.columns(2)
+    v_gastos = {}
 
-# --- RESULTADOS ---
-if total > 0 and cotas > 0:
-    valor_cota = total / cotas
+    for i, item in enumerate(itens):
+        with col_v1 if i % 2 == 0 else col_v2:
+            v_gastos[item] = st.number_input(f"{item}", min_value=0.0, step=5.0, format="%.2f")
+
+total_geral = sum(v_gastos.values())
+
+# 10. BLOCO DE RESULTADOS
+if total_geral > 0:
     st.divider()
-    st.metric("TOTAL GERAL", f"R$ {total:.2f}")
+    st.balloons() # Balões na tela! 🎈
+    
+    st.header(f"Total Geral: R$ {total_geral:.2f}")
+    
+    if total_cotas > 0:
+        valor_cota = total_geral / total_cotas
+        
+        # Blocos de resultado azuis
+        res1, res2 = st.columns(2)
+        with res1:
+            if v_guy: st.info(f"Família Guy: R$ {valor_cota*2:.2f}")
+            if v_thi: st.info(f"Família Thi: R$ {valor_cota*2:.2f}")
+            if val_c1 > 0: st.info(f"{n1}: R$ {valor_cota*val_c1:.2f}")
+        with res2:
+            if v_pau: st.info(f"Família Paulinho: R$ {valor_cota*2:.2f}")
+            if v_jor: st.info(f"Jorge: R$ {valor_cota:.2f}")
+            if val_c2 > 0: st.info(f"{n2}: R$ {valor_cota*val_c2:.2f}")
 
-    res1, res2 = st.columns(2)
-    with res1:
-        if vai_guy: st.info(f"Família Guy: R$ {valor_cota*2:.2f}")
-        if vai_thi: st.info(f"Família Thi: R$ {valor_cota*2:.2f}")
-        if c1_val > 0: st.info(f"{nome_c1}: R$ {valor_cota * c1_val:.2f}")
-    with res2:
-        if vai_paulinho: st.info(f"Família Paulinho: R$ {valor_cota*2:.2f}")
-        if vai_jorge: st.info(f"Jorge: R$ {valor_cota:.2f}")
-        if c2_val > 0: st.info(f"{nome_c2}: R$ {valor_cota * c2_val:.2f}")
+        # Texto para WhatsApp
+        data_fmt = data_evento.strftime("%d/%m/%Y")
+        resumo = f"🍖 *CHURRASCO DO {anfitriao.upper()}* 🍖\n📅 Data: {data_fmt}\n\n"
+        resumo += f"💰 *Total: R$ {total_geral:.2f}*\n\n"
+        
+        if v_guy: resumo += f"👨‍👩‍👧‍👦 Família Guy: R$ {valor_cota*2:.2f}\n"
+        if v_pau: resumo += f"👨‍👩‍👧‍👦 Família Paulinho: R$ {valor_cota*2:.2f}\n"
+        if v_thi: resumo += f"👨‍👩‍👧‍👧 Família Thi: R$ {valor_cota*2:.2f}\n"
+        if v_jor: resumo += f"❓ Jorge: R$ {valor_cota:.2f}\n"
+        if val_c1 > 0: resumo += f"❓ {n1}: R$ {valor_cota*val_c1:.2f}\n"
+        if val_c2 > 0: resumo += f"❓ {n2}: R$ {valor_cota*val_c2:.2f}\n"
+        
+        resumo += f"\n📍 *Pix para pagamento:* {chave_final}"
 
-    # --- TEXTO WHATSAPP ---
-    data = datetime.now().strftime("%d/%m/%Y")
-    resumo = f"🍖 *CHURRASCO DO {local_selecionado.upper()}* 🍖\n📅 Data: {data}\n\n"
-    resumo += f"💰 *Total: R$ {total:.2f}*\n\n"
-    
-    if vai_guy: resumo += f"👨‍👩‍👧‍👦 Família Guy: R$ {valor_cota*2:.2f}\n"
-    if vai_paulinho: resumo += f"👨‍👩‍👧‍👦 Família Paulinho: R$ {valor_cota*2:.2f}\n"
-    if vai_thi: resumo += f"👨‍👩‍👧‍👧 Família Thi: R$ {valor_cota*2:.2f}\n"
-    if vai_jorge: resumo += f"❓ Jorge: R$ {valor_cota:.2f}\n"
-    
-    if c1_val > 0: resumo += f"❓ {nome_c1}: R$ {valor_cota * c1_val:.2f}\n"
-    if c2_val > 0: resumo += f"❓ {nome_c2}: R$ {valor_cota * c2_val:.2f}\n"
-    
-    resumo += f"\n📍 *Pix para pagamento:* {chave_pix}"
-
-    st.subheader("📲 Enviar Resumo")
-    st.text_area("Confira o texto:", resumo, height=250)
-    
-    link_zap = f"https://api.whatsapp.com/send?text={urllib.parse.quote(resumo)}"
-    
-    st.markdown(f"""
-        <a href="{link_zap}" target="_blank" style="text-decoration: none;">
-            <div style="width: 100%; background-color: #25D366; color: white; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
-                🚀 ENVIAR PARA WHATSAPP
-            </div>
-        </a>""", unsafe_allow_html=True)
+        st.subheader("📲 Enviar Resumo")
+        st.text_area("Texto final:", resumo, height=250)
+        
+        link_zap = f"https://api.whatsapp.com/send?text={urllib.parse.quote(resumo)}"
+        st.markdown(f"""
+            <a href="{link_zap}" target="_blank" style="text-decoration: none;">
+                <div style="width: 100%; background-color: #25D366; color: white; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
+                    🚀 ENVIAR PARA WHATSAPP
+                </div>
+            </a>""", unsafe_allow_html=True)
+    else:
+        st.error("Selecione os participantes!")
 else:
-    st.write("Aguardando lançamento de valores...")
+    st.info("👆 Abra a lista acima e lance os valores para calcular!")
