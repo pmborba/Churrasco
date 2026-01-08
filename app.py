@@ -12,10 +12,15 @@ st.markdown(
         background-repeat: no-repeat;
         background-position: center;
         background-attachment: fixed;
+        background-color: #0e1117;
     }}
     /* Deixando os textos brancos para aparecerem sobre a foto */
     h1, h2, h3, p, label, .stMetric {{
         color: white !important;
+    }}
+    /* Adiciona uma sombra para ler melhor sobre a foto */      
+        text-shadow: 2px 2px 4px #000000;
+    }}
     }}
     /* Fundo dos campos de entrada levemente escuro para leitura */
     .stNumberInput div {{
