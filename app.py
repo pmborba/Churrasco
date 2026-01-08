@@ -8,123 +8,122 @@ st.set_page_config(page_title="Rachadinha Churrasco", page_icon="🍖")
 # Link da sua foto no GitHub
 fundo_url = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
 
-# --- ESTILO VISUAL ---
+# --- ESTILO VISUAL PADRONIZADO ---
 st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("{fundo_url}");
-        background-size: contain;
-        background-repeat: no-repeat;
+        background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("{fundo_url}");
+        background-size: cover;
         background-position: center;
         background-attachment: fixed;
-        background-color: #0e1117;
     }}
-    h1, h2, h3, p, label, .stMetric {{
+    
+    /* Padronização dos textos */
+    h1, h2, h3, p, label {{
         color: white !important;
         text-shadow: 2px 2px 4px #000000;
+        font-family: 'sans-serif';
     }}
-    /* Estilização para radio buttons, checkboxes e inputs */
-    .stNumberInput div div, .stNumberInput button, .stTextArea textarea, [data-baseweb="radio"] div {{
-        background-color: rgba(255, 255, 255, 0.3) !important;
-        border: none !important;
+
+    /* Caixas de seleção e Inputs padronizados */
+    .stCheckbox, div[data-baseweb="radio"], .stNumberInput, .stTextArea textarea {{
+        background-color: rgba(255, 255, 255, 0.2) !important;
         border-radius: 10px !important;
+        padding: 10px !important;
+        margin-bottom: 10px !important;
     }}
-    input, textarea, span {{
+
+    /* Fonte preta apenas onde há inserção de dados para contraste */
+    input, textarea, span[data-baseweb="tag"] {{
         color: black !important;
         font-weight: bold !important;
+    }}
+    
+    /* Ajuste para não sobrepor ícones de rádio */
+    div[role="radiogroup"] {{
+        gap: 15px;
     }}
     </style>
     """,
     unsafe_allow_html=True
 )
 
-st.title("🍖 Rachadinha dos amigos 🍖")
+st.title("🍖 Rachadinha dos amigos")
 
-# --- SELEÇÃO DE LOCAL E DATA ---
-data_atual = datetime.now().strftime("%d/%m/%Y")
-
+# --- SELEÇÃO DE LOCAL ---
 st.subheader("🏠 Onde é o churrasco?")
-local_selecionado = st.radio(
+local_selecionado = st.selectbox(
     "Selecione o anfitrião:",
-    ["Guy", "Thi", "Paulinho"],
-    horizontal=True
+    ["Guy", "Thi", "Paulinho"]
 )
 
-# --- SELEÇÃO DE PARTICIPANTES ---
+# --- PARTICIPANTES (ORGANIZADOS EM COLUNAS IGUAIS) ---
 st.subheader("👥 Quem participou?")
-col_p1, col_p2 = st.columns(2)
+col1, col2 = st.columns(2)
 
-with col_p1:
-    vai_guy = st.checkbox("Família do Guy", value=True)
-    vai_thi = st.checkbox("Família do Thi", value=True)
-with col_p2:
-    vai_paulinho = st.checkbox("Família do Paulinho", value=True)
+with col1:
+    vai_guy = st.checkbox("Família Guy", value=True)
+    vai_thi = st.checkbox("Família Thi", value=True)
+with col2:
+    vai_paulinho = st.checkbox("Família Paulinho", value=True)
     vai_jorge = st.checkbox("Jorge", value=True)
 
-# Cálculo de Cotas
-cotas_totais = 0
-participantes_lista = []
-if vai_guy: cotas_totais += 2; participantes_lista.append("Família Guy")
-if vai_thi: cotas_totais += 2; participantes_lista.append("Família Thi")
-if vai_paulinho: cotas_totais += 2; participantes_lista.append("Família Paulinho")
-if vai_jorge: cotas_totais += 1; participantes_lista.append("Jorge")
+# Lógica de Cotas
+cotas = 0
+lista_presentes = []
+if vai_guy: cotas += 2; lista_presentes.append("Guy")
+if vai_thi: cotas += 2; lista_presentes.append("Thi")
+if vai_paulinho: cotas += 2; lista_presentes.append("Paulinho")
+if vai_jorge: cotas += 1; lista_presentes.append("Jorge")
 
-# --- LANÇAMENTO DE GASTOS ---
-itens = ["Carne", "Pão de alho", "Linguiça", "Cerveja", "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros valores"]
+# --- GASTOS ---
+st.subheader("📝 Lançar Valores")
+itens = ["Carne", "Pão de alho", "Linguiça", "Cerveja", "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros"]
+
+# Organizando os campos de valores em 2 colunas para economizar espaço no celular
+col_v1, col_v2 = st.columns(2)
 gastos = {}
 
-st.subheader("📝 Lançar Valores")
-for item in itens:
-    gastos[item] = st.number_input(f"{item} (R$)", min_value=0.0, value=0.0, step=5.0, format="%.2f")
+for i, item in enumerate(itens):
+    with col_v1 if i % 2 == 0 else col_v2:
+        gastos[item] = st.number_input(f"{item}", min_value=0.0, step=5.0, format="%.2f")
 
-total_geral = sum(gastos.values())
+total = sum(gastos.values())
 
-# --- RESULTADOS E ENVIO ---
-if total_geral > 0 and cotas_totais > 0:
-    cota_unitaria = total_geral / cotas_totais
+# --- RESULTADOS ---
+if total > 0 and cotas > 0:
+    valor_cota = total / cotas
     st.divider()
-    st.header(f"Total: R$ {total_geral:.2f}")
-    
-    col_res1, col_res2 = st.columns(2)
-    with col_res1:
-        if vai_guy: st.info(f"**Família Guy:** R$ {cota_unitaria * 2:.2f}")
-        if vai_thi: st.info(f"**Família Thi:** R$ {cota_unitaria * 2:.2f}")
-    with col_res2:
-        if vai_paulinho: st.info(f"**Família Paulinho:** R$ {cota_unitaria * 2:.2f}")
-        if vai_jorge: st.success(f"**Jorge:** R$ {cota_unitaria:.2f}")
+    st.metric("TOTAL GERAL", f"R$ {total:.2f}")
 
-    # --- FORMATANDO TEXTO PARA WHATSAPP ---
-    # Título dinâmico conforme sua solicitação
-    resumo_zap = f"🍖 *CHURRASCO DO {local_selecionado.upper()}* 🍖\n"
-    resumo_zap += f"📅 Data: {data_atual}\n\n"
-    resumo_zap += f"💰 Total: R$ {total_geral:.2f}\n"
-    resumo_zap += f"👥 Participantes: {', '.join(participantes_lista)}\n\n"
-    
-    if vai_guy: resumo_zap += f"🔹 Família Guy: R$ {cota_unitaria*2:.2f}\n"
-    if vai_thi: resumo_zap += f"🔹 Família Thi: R$ {cota_unitaria*2:.2f}\n"
-    if vai_paulinho: resumo_zap += f"🔹 Família Paulinho: R$ {cota_unitaria*2:.2f}\n"
-    if vai_jorge: resumo_zap += f"🔸 Jorge: R$ {cota_unitaria:.2f}\n"
-    
-    resumo_zap += f"\n📍 Pix: SUA_CHAVE_AQUI"
+    # Exibição organizada
+    res1, res2 = st.columns(2)
+    with res1:
+        if vai_guy: st.info(f"Família Guy: R$ {valor_cota*2:.2f}")
+        if vai_thi: st.info(f"Família Thi: R$ {valor_cota*2:.2f}")
+    with res2:
+        if vai_paulinho: st.info(f"Família Paulinho: R$ {valor_cota*2:.2f}")
+        if vai_jorge: st.success(f"Jorge: R$ {valor_cota:.2f}")
 
-    texto_para_url = urllib.parse.quote(resumo_zap)
-    link_whatsapp = f"https://api.whatsapp.com/send?text={texto_para_url}"
+    # --- TEXTO WHATSAPP ---
+    data = datetime.now().strftime("%d/%m/%Y")
+    resumo = f"🍖 *CHURRASCO DO {local_selecionado.upper()}* 🍖\n📅 Data: {data}\n\n"
+    resumo += f"💰 *Total: R$ {total:.2f}*\n\n"
+    if vai_guy: resumo += f"🔹 Família Guy: R$ {valor_cota*2:.2f}\n"
+    if vai_thi: resumo += f"🔹 Família Thi: R$ {valor_cota*2:.2f}\n"
+    if vai_paulinho: resumo += f"🔹 Família Paulinho: R$ {valor_cota*2:.2f}\n"
+    if vai_jorge: resumo += f"🔸 Jorge: R$ {valor_cota:.2f}\n"
+    resumo += f"\n📍 Pix: SUA_CHAVE_AQUI"
 
-    st.subheader("📲 Enviar para o Grupo")
-    st.text_area("Texto que será enviado:", value=resumo_zap, height=220)
+    st.subheader("📲 Enviar Resumo")
+    st.text_area("Confira o texto:", resumo, height=150)
     
-    st.markdown(
-        f"""
-        <a href="{link_whatsapp}" target="_blank" style="text-decoration: none;">
-            <div style="width: 100%; background-color: #25D366; color: white; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
-                🚀 ENVIAR PARA O WHATSAPP
+    link_zap = f"https://api.whatsapp.com/send?text={urllib.parse.quote(resumo)}"
+    
+    st.markdown(f"""
+        <a href="{link_zap}" target="_blank" style="text-decoration: none;">
+            <div style="width: 100%; background-color: #25D366; color: white; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 18px;">
+                🚀 ENVIAR PARA WHATSAPP
             </div>
-        </a>
-        """,
-        unsafe_allow_html=True
-    )
-elif total_geral > 0 and cotas_totais == 0:
-    st.error("Selecione quem participou para dividir a conta!")
-else:
-    st.write("Aguardando lançamento de valores...")
+        </a>""", unsafe_allow_html=True)
