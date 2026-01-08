@@ -7,8 +7,10 @@ st.set_page_config(page_title="Rachadinha Churrasco", page_icon="🍖")
 
 # --- LINKS E DADOS ---
 url_imagem = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
-# Link Embed do Spotify (Bruno & Marrone)
-url_spotify = "https://open.spotify.com/embed/playlist/37i9dQZF1DZ06evO0QiFf3?utm_source=generator"
+
+# Link do YouTube (Embed da Playlist Bruno & Marrone)
+# O código abaixo pega o ID do vídeo e da playlist que você mandou
+youtube_embed = "https://www.youtube.com/embed/98BMxJU1AGw?list=RDEMilQ9enpeArgd2xuJvt9ATw&autoplay=0"
 
 pix_dict = {
     "Guy": "064.266.399-82",
@@ -16,7 +18,7 @@ pix_dict = {
     "Paulinho": "085.994.129-90"
 }
 
-# 2. ESTILO VISUAL (CSS PURO - SEM F-STRINGS PARA EVITAR ERROS)
+# 2. ESTILO VISUAL (CSS PURO)
 st.markdown("""
 <style>
     /* Texto Branco e Sombras */
@@ -52,7 +54,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 3. ESTILO DO FUNDO (INSERIDO COM .FORMAT PARA SEGURANÇA)
+# 3. ESTILO DO FUNDO
 css_fundo = """
 <style>
 .stApp {{
@@ -70,11 +72,11 @@ st.markdown(css_fundo, unsafe_allow_html=True)
 # --- TÍTULO ---
 st.title("🍖 Rachadinha dos amigos 🍖")
 
-# --- PLAYER DO SPOTIFY (NA PÁGINA PRINCIPAL) ---
+# --- PLAYER DO YOUTUBE (MODO SEGURO) ---
 st.markdown("### 🎵 Som na Caixa")
-# Iframe montado com segurança
-html_spotify = '<iframe style="border-radius:12px" src="' + url_spotify + '" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>'
-st.markdown(html_spotify, unsafe_allow_html=True)
+# Iframe do YouTube
+html_youtube = '<iframe width="100%" height="250" src="' + youtube_embed + '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="border-radius: 12px;"></iframe>'
+st.markdown(html_youtube, unsafe_allow_html=True)
 
 # 4. CONFIGURAÇÃO
 st.subheader("🏠 Configuração")
@@ -155,7 +157,6 @@ with b2:
     if st.button("CALCULAR 🚀", use_container_width=True):
         if total > 0:
             st.session_state["estado_calc"] = True
-            # (Removido st.balloons conforme pedido)
         else:
             st.warning("Preencha algum valor!")
 
