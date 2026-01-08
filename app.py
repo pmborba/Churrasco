@@ -52,7 +52,7 @@ st.markdown(
 st.title("🍖 Rachadinha dos amigos 🍖")
 st.info("Divisão: 3 Famílias (2 cotas cada) + Jorge (1 cota) = 7 cotas")
 
-# --- LISTA DE ITENS ATUALIZADA (Com "Outros valores") ---
+# --- LISTA DE ITENS ATUALIZADA ---
 itens = [
     "Carne", "Pão de alho", "Linguiça", "Cerveja", 
     "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros valores"
@@ -86,11 +86,16 @@ if total_geral > 0:
     resumo_zap += f"👨‍👩‍👧‍👦 Família (Casal): R$ {cota*2:.2f}\n"
     resumo_zap += f"👤 Jorge: R$ {cota:.2f}\n\n"
     resumo_zap += f"📍 Segue pix para pagamento:\n"
-    resumo_zap += "" 
+    resumo_zap += "SUA_CHAVE_PIX_AQUI" 
 
     st.subheader("📲 Resumo para Enviar")
+    
+    # Campo de texto (o botão nativo de copiar aparece no canto superior direito deste campo)
     st.text_area(label="Texto pronto para o grupo:", value=resumo_zap, height=220)
-    st.copy_button(label="📋 Copiar Texto do Churrasco", text=resumo_zap)
+    
+    # Botão de cópia alternativo (Caso o nativo não apareça em alguns celulares)
+    if st.button("📋 Clique aqui para gerar link de cópia"):
+        st.write("Toque e segure no texto acima para copiar.")
 
 else:
     st.write("Insira os valores acima para calcular a divisão.")
