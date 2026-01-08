@@ -41,15 +41,6 @@ st.markdown(
         color: black !important;
         -webkit-text-fill-color: black !important;
     }}
-    .pix-box {{
-        background-color: rgba(255, 255, 255, 0.3);
-        padding: 10px;
-        border-radius: 10px;
-        color: black;
-        font-weight: bold;
-        text-align: center;
-        margin-top: 5px;
-    }}
     </style>
     """,
     unsafe_allow_html=True
@@ -57,16 +48,10 @@ st.markdown(
 
 st.title("🍖 Rachadinha dos amigos 🍖")
 
-# --- SELEÇÃO DE LOCAL E PIX ---
+# --- SELEÇÃO DE LOCAL ---
 st.subheader("🏠 Local do churras?")
-col_local, col_pix_info = st.columns([1, 1.5])
-
-with col_local:
-    local_selecionado = st.selectbox("Anfitrião:", ["Guy", "Thi", "Paulinho"])
-
-with col_pix_info:
-    chave_pix = chaves_cadastradas.get(local_selecionado, "")
-    st.markdown(f'<p style="margin-bottom: 0px;">Pix para Pagamento:</p><div class="pix-box">{chave_pix}</div>', unsafe_allow_html=True)
+local_selecionado = st.selectbox("Anfitrião:", ["Guy", "Thi", "Paulinho"])
+chave_pix = chaves_cadastradas.get(local_selecionado, "")
 
 # --- PARTICIPANTES FIXOS ---
 st.subheader("👥 Quem participou?")
@@ -138,31 +123,4 @@ if total > 0 and cotas > 0:
         if vai_jorge: st.info(f"Jorge: R$ {valor_cota:.2f}")
         if c2_val > 0: st.info(f"{nome_c2}: R$ {valor_cota * c2_val:.2f}")
 
-    # --- TEXTO WHATSAPP ---
-    data = datetime.now().strftime("%d/%m/%Y")
-    resumo = f"🍖 *CHURRASCO DO {local_selecionado.upper()}* 🍖\n📅 Data: {data}\n\n"
-    resumo += f"💰 *Total: R$ {total:.2f}*\n\n"
-    
-    if vai_guy: resumo += f"👨‍👩‍👧‍👦 Família Guy: R$ {valor_cota*2:.2f}\n"
-    if vai_paulinho: resumo += f"👨‍👩‍👧‍👦 Família Paulinho: R$ {valor_cota*2:.2f}\n"
-    if vai_thi: resumo += f"👨‍👩‍👧‍👧 Família Thi: R$ {valor_cota*2:.2f}\n"
-    if vai_jorge: resumo += f"❓ Jorge: R$ {valor_cota:.2f}\n"
-    
-    if c1_val > 0: resumo += f"❓ {nome_c1}: R$ {valor_cota * c1_val:.2f}\n"
-    if c2_val > 0: resumo += f"❓ {nome_c2}: R$ {valor_cota * c2_val:.2f}\n"
-    
-    resumo += f"\n📍 *Pix para pagamento:* {chave_pix}"
-
-    st.subheader("📲 Enviar Resumo")
-    st.text_area("Confira o texto:", resumo, height=250)
-    
-    link_zap = f"https://api.whatsapp.com/send?text={urllib.parse.quote(resumo)}"
-    
-    st.markdown(f"""
-        <a href="{link_zap}" target="_blank" style="text-decoration: none;">
-            <div style="width: 100%; background-color: #25D366; color: white; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
-                🚀 ENVIAR PARA WHATSAPP
-            </div>
-        </a>""", unsafe_allow_html=True)
-else:
-    st.write("Aguardando lançamento de valores...")
+    #
