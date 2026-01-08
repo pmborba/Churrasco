@@ -15,7 +15,7 @@ chaves_cadastradas = {
     "Paulinho": "085.994.129-90"
 }
 
-# --- ESTILO VISUAL (FOTO CENTRALIZADA E TRANSPARÊNCIA) ---
+# --- ESTILO VISUAL ---
 st.markdown(
     f"""
     <style>
@@ -51,7 +51,7 @@ st.title("🍖 Rachadinha dos amigos 🍖")
 # --- SELEÇÃO DE LOCAL ---
 st.subheader("🏠 Local do churras?")
 local_selecionado = st.selectbox("Anfitrião:", ["Guy", "Thi", "Paulinho"])
-chave_pix = chaves_cadastradas.get(local_selecionado, "")
+chave_pix_final = chaves_cadastradas.get(local_selecionado, "")
 
 # --- PARTICIPANTES FIXOS ---
 st.subheader("👥 Quem participou?")
@@ -80,47 +80,41 @@ with col_c2b:
     tipo_c2 = st.selectbox("Cota 2:", ["Ninguém", "Individual (1 cota)", "Casal (2 cotas)"], key="tc2")
 
 # Lógica de Cotas
-cotas = 0
-if vai_guy: cotas += 2
-if vai_thi: cotas += 2
-if vai_paulinho: cotas += 2
-if vai_jorge: cotas += 1
+cotas_calc = 0
+if vai_guy: cotas_calc += 2
+if vai_thi: cotas_calc += 2
+if vai_paulinho: cotas_calc += 2
+if vai_jorge: cotas_calc += 1
 
-c1_val = 0
+c1_cota = 0
 if nome_c1 and tipo_c1 != "Ninguém":
-    c1_val = 1 if "Individual" in tipo_c1 else 2
-    cotas += c1_val
+    c1_cota = 1 if "Individual" in tipo_c1 else 2
+    cotas_calc += c1_cota
 
-c2_val = 0
+c2_cota = 0
 if nome_c2 and tipo_c2 != "Ninguém":
-    c2_val = 1 if "Individual" in tipo_c2 else 2
-    cotas += c2_val
+    c2_cota = 1 if "Individual" in tipo_c2 else 2
+    cotas_calc += c2_cota
 
 # --- LANÇAMENTO DE GASTOS ---
 st.subheader("📝 Lançar Valores")
-itens = ["Carne", "Pão de alho", "Linguiça", "Cerveja", "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros"]
+itens_lista = ["Carne", "Pão de alho", "Linguiça", "Cerveja", "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros"]
 col_v1, col_v2 = st.columns(2)
-gastos = {}
-for i, item in enumerate(itens):
-    with col_v1 if i % 2 == 0 else col_v2:
-        gastos[item] = st.number_input(f"{item}", min_value=0.0, step=5.0, format="%.2f")
+gastos_dict = {}
 
-total = sum(gastos.values())
+for idx, item_nome in enumerate(itens_lista):
+    with col_v1 if idx % 2 == 0 else col_v2:
+        gastos_dict[item_nome] = st.number_input(f"{item_nome}", min_value=0.0, step=5.0, format="%.2f")
 
-# --- RESULTADOS ---
-if total > 0 and cotas > 0:
-    valor_cota = total / cotas
+total_valor = sum(gastos_dict.values())
+
+# --- EXIBIÇÃO DO RESUMO ---
+# O bloco só aparece se o total for maior que zero
+if total_valor > 0:
     st.divider()
-    st.metric("TOTAL GERAL", f"R$ {total:.2f}")
-
-    res1, res2 = st.columns(2)
-    with res1:
-        if vai_guy: st.info(f"Família Guy: R$ {valor_cota*2:.2f}")
-        if vai_thi: st.info(f"Família Thi: R$ {valor_cota*2:.2f}")
-        if c1_val > 0: st.info(f"{nome_c1}: R$ {valor_cota * c1_val:.2f}")
-    with res2:
-        if vai_paulinho: st.info(f"Família Paulinho: R$ {valor_cota*2:.2f}")
-        if vai_jorge: st.info(f"Jorge: R$ {valor_cota:.2f}")
-        if c2_val > 0: st.info(f"{nome_c2}: R$ {valor_cota * c2_val:.2f}")
-
-    #
+    st.header(f"Total Geral: R$ {total_valor:.2f}")
+    
+    if cotas_calc > 0:
+        v_cota = total_valor / cotas_calc
+        
+        # Blocos de resultado az
