@@ -15,7 +15,7 @@ chaves_cadastradas = {
     "Paulinho": "085.994.129-90"
 }
 
-# --- ESTILO VISUAL RESTAURADO (FOTO CENTRALIZADA) ---
+# --- ESTILO VISUAL RESTAURADO ---
 st.markdown(
     f"""
     <style>
@@ -31,7 +31,6 @@ st.markdown(
         color: white !important;
         text-shadow: 2px 2px 4px #000000;
     }}
-    /* Campos de entrada com transparência e fonte preta */
     .stCheckbox, div[data-baseweb="select"], .stNumberInput, .stTextArea textarea, .stTextInput input, .stSelectbox div {{
         background-color: rgba(255, 255, 255, 0.3) !important;
         border-radius: 10px !important;
@@ -42,6 +41,16 @@ st.markdown(
         color: black !important;
         -webkit-text-fill-color: black !important;
     }}
+    /* Estilo para a exibição da chave Pix fixa */
+    .pix-box {{
+        background-color: rgba(255, 255, 255, 0.3);
+        padding: 10px;
+        border-radius: 10px;
+        color: black;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 5px;
+    }}
     </style>
     """,
     unsafe_allow_html=True
@@ -49,14 +58,17 @@ st.markdown(
 
 st.title("🍖 Rachadinha dos amigos 🍖")
 
-# --- SELEÇÃO DE LOCAL E PIX ---
+# --- SELEÇÃO DE LOCAL E VÍNCULO DE PIX ---
 st.subheader("🏠 Local do churras?")
-col_local, col_pix = st.columns([1, 1.5])
+col_local, col_pix_info = st.columns([1, 1.5])
+
 with col_local:
     local_selecionado = st.selectbox("Anfitrião:", ["Guy", "Thi", "Paulinho"])
-with col_pix:
-    chave_sugerida = chaves_cadastradas.get(local_selecionado, "")
-    chave_pix = st.text_input("Confirmar Chave Pix:", value=chave_sugerida)
+
+with col_pix_info:
+    # Apenas exibe a chave vinculada ao anfitrião
+    chave_pix = chaves_cadastradas.get(local_selecionado, "")
+    st.markdown(f'<p style="margin-bottom: 0px;">Pix para Pagamento:</p><div class="pix-box">{chave_pix}</div>', unsafe_allow_html=True)
 
 # --- PARTICIPANTES FIXOS ---
 st.subheader("👥 Quem participou?")
