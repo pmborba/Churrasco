@@ -7,8 +7,8 @@ st.set_page_config(page_title="Rachadinha Churrasco", page_icon="🍖")
 
 # --- LINKS E DADOS ---
 url_imagem = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
-# Link da Playlist (Embed do Spotify)
-url_spotify = "https://open.spotify.com/embed/playlist/37i9dQZF1DZ06evO0QN0T9?utm_source=generator"
+# Link Embed do Spotify (Bruno & Marrone)
+url_spotify = "https://open.spotify.com/embed/playlist/37i9dQZF1DZ06evO0QiFf3?utm_source=generator"
 
 pix_dict = {
     "Guy": "064.266.399-82",
@@ -67,15 +67,14 @@ css_fundo = """
 """.format(url=url_imagem)
 st.markdown(css_fundo, unsafe_allow_html=True)
 
-# --- BARRA LATERAL (SPOTIFY) ---
-with st.sidebar:
-    st.header("🎵 Modão Sertanejo")
-    # Iframe montado com segurança
-    html_spotify = '<iframe style="border-radius:12px" src="' + url_spotify + '" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>'
-    st.markdown(html_spotify, unsafe_allow_html=True)
-
 # --- TÍTULO ---
 st.title("🍖 Rachadinha dos amigos 🍖")
+
+# --- PLAYER DO SPOTIFY (NA PÁGINA PRINCIPAL) ---
+st.markdown("### 🎵 Som na Caixa")
+# Iframe montado com segurança
+html_spotify = '<iframe style="border-radius:12px" src="' + url_spotify + '" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>'
+st.markdown(html_spotify, unsafe_allow_html=True)
 
 # 4. CONFIGURAÇÃO
 st.subheader("🏠 Configuração")
@@ -97,11 +96,11 @@ with col_fam2:
     v_pau = st.checkbox("Família Paulinho", value=True)
     v_jor = st.checkbox("Jorge", value=True)
 
-# 6. CONVIDADOS EXTRAS (LAYOUT CORRIGIDO PARA CELULAR)
+# 6. CONVIDADOS EXTRAS (LAYOUT PARA CELULAR)
 st.markdown("---")
 st.write("👤 **Convidados Extras**")
 
-# Convidado 1 (Agrupado para ficar junto no celular)
+# Convidado 1
 st.markdown("##### Convidado 1")
 row1_c1, row1_c2 = st.columns([2, 1])
 with row1_c1:
@@ -109,7 +108,7 @@ with row1_c1:
 with row1_c2:
     tipo1 = st.selectbox("Cota:", ["Ninguém", "Individual", "Casal"], key="t1")
 
-# Convidado 2 (Agrupado para ficar junto no celular)
+# Convidado 2
 st.markdown("##### Convidado 2")
 row2_c1, row2_c2 = st.columns([2, 1])
 with row2_c1:
@@ -156,7 +155,7 @@ with b2:
     if st.button("CALCULAR 🚀", use_container_width=True):
         if total > 0:
             st.session_state["estado_calc"] = True
-            st.balloons()
+            # (Removido st.balloons conforme pedido)
         else:
             st.warning("Preencha algum valor!")
 
