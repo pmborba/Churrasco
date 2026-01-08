@@ -1,3 +1,8 @@
+import streamlit as st
+
+# Substitua o link abaixo pelo seu link do GitHub
+fundo_url = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
+
 st.markdown(
     f"""
     <style>
