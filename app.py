@@ -1,7 +1,30 @@
 import streamlit as st
 
-# Configuração da página
-st.set_page_config(page_title="Churrasco 2026", page_icon="🍖")
+# Substitua o link abaixo pelo que você copiou no passo anterior
+fundo_url = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
+
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("{fundo_url}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }}
+    /* Deixando os textos brancos para aparecerem sobre a foto */
+    h1, h2, h3, p, label, .stMetric {{
+        color: white !important;
+    }}
+    /* Fundo dos campos de entrada levemente escuro para leitura */
+    .stNumberInput div {{
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 st.title("🍖 Rachadinha dos amigos")
 st.info("Divisão: 3 Famílias (2 cotas cada) + Jorge (1 cota) = 7 cotas")
