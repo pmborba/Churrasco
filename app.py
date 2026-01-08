@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Substitua o link abaixo pelo seu link do GitHub
+# Link da sua foto no GitHub
 fundo_url = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
 
 st.markdown(
@@ -15,38 +15,32 @@ st.markdown(
         background-color: #0e1117;
     }}
 
-    /* Textos brancos com sombra para leitura */
-    h1, h2, h3, p, label, .stMetric, .stMarkdown {{
+    /* Textos do App (Títulos e Labels) */
+    h1, h2, h3, p, label, .stMetric {{
         color: white !important;
         text-shadow: 2px 2px 4px #000000;
     }}
 
-    /* CAMPOS DE ENTRADA E ÁREA DE TEXTO (Resumo Zap) */
+    /* CAMPOS DE ENTRADA E ÁREA DE TEXTO (Resumo) */
+    /* Transparência 0.3 e Texto PRETO para legibilidade */
     .stNumberInput div div, .stNumberInput button, .stTextArea textarea {{
         background-color: rgba(255, 255, 255, 0.3) !important;
-        color: white !important;
+        color: black !important;
         border: none !important;
         border-radius: 10px !important;
+        font-weight: bold !important;
     }}
     
-    /* Cor do texto dentro da área de texto */
-    .stTextArea textarea {{
-        color: white !important;
-        font-weight: normal !important;
+    /* Garante que o texto digitado e o resumo fiquem pretos */
+    input, textarea {{
+        color: black !important;
+        -webkit-text-fill-color: black !important;
     }}
 
-    /* Garante que o número digitado fique visível */
-    input {{
-        color: white !important;
-        font-weight: bold !important;
-        background-color: transparent !important;
-    }}
-
-    /* Alertas (Cotas) também transparentes */
+    /* Ajuste para os alertas (Cotas) */
     .stAlert {{
         background-color: rgba(255, 255, 255, 0.15) !important;
         color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.2);
     }}
     </style>
     """,
@@ -54,43 +48,35 @@ st.markdown(
 )
 
 st.title("🍖 Rachadinha dos amigos 🍖")
-st.info("Divisão: 3 Famílias (2 cotas cada) + Jorge (1 cota) = 7 cotas")
 
-itens = [
-    "Carne", "Pão de alho", "Linguiça", "Cerveja", 
-    "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros"
-]
+# ... (Mantenha sua lista de itens e o loop de gastos aqui) ...
 
-gastos = {}
-
-st.subheader("📝 Lançar Valores")
-for item in itens:
-    gastos[item] = st.number_input(f"{item} (R$)", min_value=0.0, value=0.0, step=5.0, format="%.2f")
-
-total_geral = sum(gastos.values())
-cota = total_geral / 7
-
-st.divider()
+# --- PARTE FINAL: RESULTADOS E WHATSAPP ---
 
 if total_geral > 0:
     st.header(f"Total: R$ {total_geral:.2f}")
     
     col1, col2 = st.columns(2)
     with col1:
-        st.warning(f"**Casal (Cada Família):**\n\nR$ {cota * 2:.2f}")
+        st.warning(f"**Casal (Família):**\n\nR$ {cota * 2:.2f}")
     with col2:
-        st.success(f"**Jorge (Individual):**\n\nR$ {cota:.2f}")
+        st.success(f"**Jorge:**\n\nR$ {cota:.2f}")
 
-    # --- FORMATAÇÃO DO TEXTO PARA WHATSAPP ---
+    # Texto formatado
     resumo_zap = f"🍖 *RESUMO DO CHURRASCO* 🍖\n\n"
     resumo_zap += f"💰 Total Geral: R$ {total_geral:.2f}\n"
     resumo_zap += f"👨‍👩‍👧‍👦 Família (Casal): R$ {cota*2:.2f}\n"
     resumo_zap += f"👤 Jorge: R$ {cota:.2f}\n\n"
     resumo_zap += f"📍 Segue pix para pagamento:\n"
-    resumo_zap += f"SUA_CHAVE_PIX_AQUI" # COLOQUE SUA CHAVE AQUI
+    resumo_zap += f"INSIRA_SEU_PIX_AQUI"
 
-    st.subheader("📲 Copiar para WhatsApp")
-    # O componente abaixo já exibe um ícone de "copiar" no canto superior direito ao passar o mouse
-    st.text_area(label="Clique no ícone no canto direito para copiar:", value=resumo_zap, height=200)
+    st.subheader("📲 Resumo para Enviar")
+    
+    # Caixa de texto com o resumo (agora com fonte preta e fundo transparente)
+    st.text_area(label="Texto pronto:", value=resumo_zap, height=220)
+    
+    # Botão de cópia nativo do Streamlit (funciona melhor que o ícone pequeno)
+    st.copy_button(label="📋 Copiar Texto do Churrasco", text=resumo_zap)
+
 else:
     st.write("Insira os valores para calcular.")
