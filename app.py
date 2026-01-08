@@ -1,8 +1,12 @@
 import streamlit as st
 
+# Configuração da página
+st.set_page_config(page_title="Rachadinha Churrasco", page_icon="🍖")
+
 # Link da sua foto no GitHub
 fundo_url = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
 
+# --- ESTILO VISUAL ---
 st.markdown(
     f"""
     <style>
@@ -22,22 +26,20 @@ st.markdown(
     }}
 
     /* CAMPOS DE ENTRADA E ÁREA DE TEXTO (Resumo) */
-    /* Transparência 0.3 e Texto PRETO para legibilidade */
     .stNumberInput div div, .stNumberInput button, .stTextArea textarea {{
         background-color: rgba(255, 255, 255, 0.3) !important;
-        color: black !important;
         border: none !important;
         border-radius: 10px !important;
-        font-weight: bold !important;
     }}
     
-    /* Garante que o texto digitado e o resumo fiquem pretos */
+    /* COR DA FONTE: PRETA nos campos e no resumo */
     input, textarea {{
         color: black !important;
         -webkit-text-fill-color: black !important;
+        font-weight: bold !important;
     }}
 
-    /* Ajuste para os alertas (Cotas) */
+    /* Alertas de resultado */
     .stAlert {{
         background-color: rgba(255, 255, 255, 0.15) !important;
         color: white !important;
@@ -48,11 +50,27 @@ st.markdown(
 )
 
 st.title("🍖 Rachadinha dos amigos 🍖")
+st.info("Divisão: 3 Famílias (2 cotas cada) + Jorge (1 cota) = 7 cotas")
 
-# ... (Mantenha sua lista de itens e o loop de gastos aqui) ...
+# --- LISTA DE ITENS ATUALIZADA (Com "Outros valores") ---
+itens = [
+    "Carne", "Pão de alho", "Linguiça", "Cerveja", 
+    "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros valores"
+]
 
-# --- PARTE FINAL: RESULTADOS E WHATSAPP ---
+gastos = {}
 
+st.subheader("📝 Lançar Valores")
+for item in itens:
+    gastos[item] = st.number_input(f"{item} (R$)", min_value=0.0, value=0.0, step=5.0, format="%.2f")
+
+# --- CÁLCULOS ---
+total_geral = sum(gastos.values())
+cota = total_geral / 7
+
+st.divider()
+
+# --- RESULTADOS E WHATSAPP ---
 if total_geral > 0:
     st.header(f"Total: R$ {total_geral:.2f}")
     
@@ -62,21 +80,17 @@ if total_geral > 0:
     with col2:
         st.success(f"**Jorge:**\n\nR$ {cota:.2f}")
 
-    # Texto formatado
+    # Montagem do texto para o Zap
     resumo_zap = f"🍖 *RESUMO DO CHURRASCO* 🍖\n\n"
     resumo_zap += f"💰 Total Geral: R$ {total_geral:.2f}\n"
     resumo_zap += f"👨‍👩‍👧‍👦 Família (Casal): R$ {cota*2:.2f}\n"
     resumo_zap += f"👤 Jorge: R$ {cota:.2f}\n\n"
     resumo_zap += f"📍 Segue pix para pagamento:\n"
-    resumo_zap += f"INSIRA_SEU_PIX_AQUI"
+    resumo_zap += "SUA_CHAVE_PIX_AQUI" 
 
     st.subheader("📲 Resumo para Enviar")
-    
-    # Caixa de texto com o resumo (agora com fonte preta e fundo transparente)
-    st.text_area(label="Texto pronto:", value=resumo_zap, height=220)
-    
-    # Botão de cópia nativo do Streamlit (funciona melhor que o ícone pequeno)
+    st.text_area(label="Texto pronto para o grupo:", value=resumo_zap, height=220)
     st.copy_button(label="📋 Copiar Texto do Churrasco", text=resumo_zap)
 
 else:
-    st.write("Insira os valores para calcular.")
+    st.write("Insira os valores acima para calcular a divisão.")
