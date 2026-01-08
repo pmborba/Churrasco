@@ -8,8 +8,8 @@ st.markdown(
     <style>
     .stApp {{
         background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("{fundo_url}");
-        background-size: cover;
-        background-position: contain;
+        background-size: contain;
+        background-position: center;
         background-attachment: fixed;
     }}
     /* Deixando os textos brancos para aparecerem sobre a foto */
