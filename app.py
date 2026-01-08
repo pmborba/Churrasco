@@ -103,7 +103,7 @@ if total_geral > 0 and cotas_totais > 0:
     if vai_paulinho: resumo_zap += f"🔹 Família Paulinho: R$ {cota_unitaria*2:.2f}\n"
     if vai_jorge: resumo_zap += f"🔸 Jorge: R$ {cota_unitaria:.2f}\n"
     
-    resumo_zap += f"\n📍 Pix: SUA_CHAVE_AQUI"
+    resumo_zap += f"\n📍 Pix: "
 
     texto_para_url = urllib.parse.quote(resumo_zap)
     link_whatsapp = f"https://api.whatsapp.com/send?text={texto_para_url}"
