@@ -130,4 +130,24 @@ if total > 0 and cotas > 0:
     
     if vai_guy: resumo += f"👨‍👩‍👧‍👦 Família Guy: R$ {valor_cota*2:.2f}\n"
     if vai_paulinho: resumo += f"👨‍👩‍👧‍👦 Família Paulinho: R$ {valor_cota*2:.2f}\n"
-    if vai_thi: resumo += f"👨‍👩‍👧‍👧 Família Thi: R$ {valor_cota*2:.2
+    if vai_thi: resumo += f"👨‍👩‍👧‍👧 Família Thi: R$ {valor_cota*2:.2f}\n"
+    if vai_jorge: resumo += f"❓ Jorge: R$ {valor_cota:.2f}\n"
+    
+    if c1_val > 0: resumo += f"❓ {nome_c1}: R$ {valor_cota * c1_val:.2f}\n"
+    if c2_val > 0: resumo += f"❓ {nome_c2}: R$ {valor_cota * c2_val:.2f}\n"
+    
+    resumo += f"\n📍 *Pix para pagamento:*\n{chave_pix}"
+
+    st.subheader("📲 Enviar Resumo")
+    st.text_area("Confira o texto:", resumo, height=250)
+    
+    link_zap = f"https://api.whatsapp.com/send?text={urllib.parse.quote(resumo)}"
+    
+    st.markdown(f"""
+        <a href="{link_zap}" target="_blank" style="text-decoration: none;">
+            <div style="width: 100%; background-color: #25D366; color: white; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
+                🚀 ENVIAR PARA WHATSAPP
+            </div>
+        </a>""", unsafe_allow_html=True)
+else:
+    st.write("Aguardando lançamento de valores...")
