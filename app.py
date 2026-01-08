@@ -6,10 +6,9 @@ from datetime import datetime
 st.set_page_config(page_title="Rachadinha Churrasco", page_icon="🍖")
 
 # --- LINKS ---
-# Foto de Fundo
 url_imagem = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
-# Link da Playlist (Bruno & Marrone - Embed)
-url_spotify = "https://open.spotify.com/embed/artist/3qZ2n5keOAatKDpBkYJlfb?utm_source=generator"
+# Link "Embed" oficial do Spotify (Bruno & Marrone)
+url_spotify = "https://open.spotify.com/embed/playlist/37i9dQZF1DZ06evO1nK5lE?utm_source=generator"
 
 # --- DADOS PIX ---
 pix_dict = {
@@ -18,7 +17,7 @@ pix_dict = {
     "Paulinho": "085.994.129-90"
 }
 
-# 2. ESTILO VISUAL (ESTÁTICO - SEM F-STRING PARA NÃO DAR ERRO)
+# 2. ESTILO VISUAL (CSS BLINDADO)
 st.markdown("""
 <style>
     /* Texto Branco */
@@ -54,7 +53,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 3. ESTILO DO FUNDO (DINÂMICO - COM TRATAMENTO DE CHAVES)
+# CSS do Fundo (Separado para não dar erro de aspas)
 css_fundo = f"""
 <style>
 .stApp {{
@@ -69,136 +68,8 @@ css_fundo = f"""
 """
 st.markdown(css_fundo, unsafe_allow_html=True)
 
-# --- BARRA LATERAL (SPOTIFY) ---
+# --- BARRA LATERAL (SPOTIFY VISUAL) ---
 with st.sidebar:
     st.header("🎵 Modão Sertanejo")
-    # Iframe simples sem f-string complexa
-    html_spotify = f'<iframe style="border-radius:12px" src="{url_spotify}" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>'
-    st.markdown(html_spotify, unsafe_allow_html=True)
-
-# --- TÍTULO ---
-st.title("🍖 Rachadinha dos amigos 🍖")
-
-# 4. CONFIGURAÇÃO
-st.subheader("🏠 Configuração")
-col1, col2 = st.columns([1.5, 1])
-with col1:
-    host = st.selectbox("Quem é o anfitrião?", ["Guy", "Thi", "Paulinho"])
-    chave_pix = pix_dict.get(host)
-with col2:
-    data_sel = st.date_input("Data:", datetime.now())
-    data_txt = data_sel.strftime("%d/%m/%Y")
-
-# 5. PARTICIPANTES
-st.subheader("👥 Quem participou?")
-c1, c2 = st.columns(2)
-with c1:
-    v_guy = st.checkbox("Família Guy", value=True)
-    v_thi = st.checkbox("Família Thi", value=True)
-with c2:
-    v_pau = st.checkbox("Família Paulinho", value=True)
-    v_jor = st.checkbox("Jorge", value=True)
-
-# 6. CONVIDADOS
-st.markdown("---")
-st.write("👤 **Convidados Extras**")
-kc1, kc2 = st.columns([2, 1])
-with kc1:
-    nome1 = st.text_input("Nome Convidado 1", key="n1")
-    nome2 = st.text_input("Nome Convidado 2", key="n2")
-with kc2:
-    tipo1 = st.selectbox("Cota 1", ["Ninguém", "Individual", "Casal"], key="t1")
-    tipo2 = st.selectbox("Cota 2", ["Ninguém", "Individual", "Casal"], key="t2")
-
-# LÓGICA DE COTAS
-num_cotas = 0
-if v_guy: num_cotas += 2
-if v_thi: num_cotas += 2
-if v_pau: num_cotas += 2
-if v_jor: num_cotas += 1
-
-q1 = 0
-if nome1 and tipo1 != "Ninguém":
-    q1 = 1 if tipo1 == "Individual" else 2
-    num_cotas += q1
-
-q2 = 0
-if nome2 and tipo2 != "Ninguém":
-    q2 = 1 if tipo2 == "Individual" else 2
-    num_cotas += q2
-
-# 7. VALORES
-st.markdown("---")
-with st.expander("📝 CLIQUE AQUI PARA LANÇAR VALORES", expanded=True):
-    lista = ["Carne", "Pão de alho", "Linguiça", "Cerveja", "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros"]
-    cv1, cv2 = st.columns(2)
-    dic_gastos = {}
-    for i, item in enumerate(lista):
-        with cv1 if i % 2 == 0 else cv2:
-            dic_gastos[item] = st.number_input(f"{item}", min_value=0.0, step=5.0, format="%.2f")
-
-total = sum(dic_gastos.values())
-
-# --- BOTÃO CALCULAR ---
-if "estado_calc" not in st.session_state:
-    st.session_state["estado_calc"] = False
-
-st.markdown("<br>", unsafe_allow_html=True)
-b1, b2, b3 = st.columns([1, 2, 1])
-with b2:
-    if st.button("CALCULAR 🚀", use_container_width=True):
-        if total > 0:
-            st.session_state["estado_calc"] = True
-            st.balloons()
-        else:
-            st.warning("Preencha algum valor!")
-
-# 8. RESULTADOS
-if st.session_state["estado_calc"] and total > 0:
-    st.divider()
-    st.header(f"💰 Total Geral: R$ {total:.2f}")
-
-    if num_cotas > 0:
-        val_cota = total / num_cotas
-        
-        # Visuais
-        r1, r2 = st.columns(2)
-        with r1:
-            if v_guy: st.info(f"Família Guy: R$ {val_cota*2:.2f}")
-            if v_thi: st.info(f"Família Thi: R$ {val_cota*2:.2f}")
-            if q1 > 0: st.info(f"{nome1}: R$ {val_cota*q1:.2f}")
-        with r2:
-            if v_pau: st.info(f"Família Paulinho: R$ {val_cota*2:.2f}")
-            if v_jor: st.info(f"Jorge: R$ {val_cota:.2f}")
-            if q2 > 0: st.info(f"{nome2}: R$ {val_cota*q2:.2f}")
-
-        # Texto WhatsApp (Montagem Segura)
-        msg = f"🍖 *CHURRASCO DO {host.upper()}* 🍖\n"
-        msg += f"📅 Data: {data_txt}\n\n"
-        msg += f"💰 *Total: R$ {total:.2f}*\n\n"
-        
-        if v_guy: msg += f"👨‍👩‍👧‍👦 Família Guy: R$ {val_cota*2:.2f}\n"
-        if v_pau: msg += f"👨‍👩‍👧‍👦 Família Paulinho: R$ {val_cota*2:.2f}\n"
-        if v_thi: msg += f"👨‍👩‍👧‍👧 Família Thi: R$ {val_cota*2:.2f}\n"
-        if v_jor: msg += f"❓ Jorge: R$ {val_cota:.2f}\n"
-        if q1 > 0: msg += f"❓ {nome1}: R$ {val_cota*q1:.2f}\n"
-        if q2 > 0: msg += f"❓ {nome2}: R$ {val_cota*q2:.2f}\n"
-        
-        msg += f"\n📍 *Pix para pagamento:* {chave_pix}"
-
-        st.subheader("📲 Enviar Resumo")
-        st.text_area("Copie o texto:", msg, height=250)
-        
-        # Botão Link Zap
-        link = "https://api.whatsapp.com/send?text=" + urllib.parse.quote(msg)
-        
-        st.markdown(
-            f'<a href="{link}" target="_blank" style="text-decoration:none;">'
-            '<div style="background-color:#25D366;color:white;padding:15px;text-align:center;border-radius:10px;font-weight:bold;font-size:18px;">'
-            '🚀 ENVIAR PARA WHATSAPP'
-            '</div></a>',
-            unsafe_allow_html=True
-        )
-
-    else:
-        st.error("Selecione os participantes!")
+    # Player Embutido (Iframe)
+    html_spotify = f'<iframe style="border-radius
