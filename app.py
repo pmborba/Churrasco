@@ -10,8 +10,8 @@ fundo_url = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%2
 
 # --- BANCO DE DADOS DE CHAVES PIX ---
 chaves_cadastradas = {
-    "Guy": "Preencher a chave pix",
-    "Thi": "Preencher a chave pix",
+    "Guy": "064.266.399-82",
+    "Thi": "064.514.089-99",
     "Paulinho": "085.994.129-90"
 }
 
