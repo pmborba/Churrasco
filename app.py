@@ -59,4 +59,20 @@ with col_f1:
     vai_guy = st.checkbox("Família Guy", value=True)
     vai_thi = st.checkbox("Família Thi", value=True)
 with col_f2:
-    vai_paulinho =
+    vai_paulinho = st.checkbox("Família Paulinho", value=True)
+    vai_jorge = st.checkbox("Jorge", value=True)
+
+# --- CONVIDADOS EXTRAS ---
+st.markdown("---")
+st.write("👤 **Adicionar Convidados?**")
+
+col_c1a, col_c1b = st.columns([2, 1])
+with col_c1a:
+    nome_c1 = st.text_input("Nome do convidado 1:", key="nc1")
+with col_c1b:
+    tipo_c1 = st.selectbox("Cota 1:", ["Ninguém", "Individual (1 cota)", "Casal (2 cotas)"], key="tc1")
+
+col_c2a, col_c2b = st.columns([2, 1])
+with col_c2a:
+    nome_c2 = st.text_input("Nome do convidado 2:", key="nc2")
+with col_c2b:
