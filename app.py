@@ -62,14 +62,23 @@ with col2:
     vai_paulinho = st.checkbox("Família Paulinho", value=True)
     vai_jorge = st.checkbox("Jorge", value=True)
 
-# --- CONVIDADO EXTRA ---
+# --- CONVIDADOS EXTRAS ---
 st.markdown("---")
-st.write("👤 **Adicionar Convidado Extra?**")
-col_conv1, col_conv2 = st.columns([2, 1])
-with col_conv1:
-    nome_convidado = st.text_input("Nome do convidado:", placeholder="Ex: Primo do Thi")
-with col_conv2:
-    tipo_convidado = st.selectbox("Tipo:", ["Ninguém", "Individual (1 cota)", "Casal (2 cotas)"])
+st.write("👤 **Adicionar Convidados?**")
+
+# Convidado 1
+col_conv1a, col_conv1b = st.columns([2, 1])
+with col_conv1a:
+    nome_conv1 = st.text_input("Nome do convidado 1:", placeholder="Ex: Amigo 1")
+with col_conv1b:
+    tipo_conv1 = st.selectbox("Cota 1:", ["Ninguém", "Individual (1 cota)", "Casal (2 cotas)"], key="c1")
+
+# Convidado 2
+col_conv2a, col_conv2b = st.columns([2, 1])
+with col_conv2a:
+    nome_conv2 = st.text_input("Nome do convidado 2:", placeholder="Ex: Amigo 2")
+with col_conv2b:
+    tipo_conv2 = st.selectbox("Cota 2:", ["Ninguém", "Individual (1 cota)", "Casal (2 cotas)"], key="c2")
 
 # Lógica de Cotas
 cotas = 0
@@ -78,64 +87,7 @@ if vai_thi: cotas += 2
 if vai_paulinho: cotas += 2
 if vai_jorge: cotas += 1
 
-# Soma cota do convidado
-cota_convidado = 0
-if nome_convidado and tipo_convidado != "Ninguém":
-    cota_convidado = 1 if "Individual" in tipo_convidado else 2
-    cotas += cota_convidado
-
-# --- LANÇAMENTO DE GASTOS ---
-st.subheader("📝 Lançar Valores")
-itens = ["Carne", "Pão de alho", "Linguiça", "Cerveja", "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo", "Outros"]
-col_v1, col_v2 = st.columns(2)
-gastos = {}
-for i, item in enumerate(itens):
-    with col_v1 if i % 2 == 0 else col_v2:
-        gastos[item] = st.number_input(f"{item}", min_value=0.0, step=5.0, format="%.2f")
-
-total = sum(gastos.values())
-
-# --- RESULTADOS ---
-if total > 0 and cotas > 0:
-    valor_cota = total / cotas
-    st.divider()
-    st.metric("TOTAL GERAL", f"R$ {total:.2f}")
-
-    res1, res2 = st.columns(2)
-    with res1:
-        if vai_guy: st.info(f"Família Guy: R$ {valor_cota*2:.2f}")
-        if vai_thi: st.info(f"Família Thi: R$ {valor_cota*2:.2f}")
-        if nome_convidado and cota_convidado > 0: 
-            st.warning(f"{nome_convidado}: R$ {valor_cota * cota_convidado:.2f}")
-    with res2:
-        if vai_paulinho: st.info(f"Família Paulinho: R$ {valor_cota*2:.2f}")
-        if vai_jorge: st.success(f"Jorge: R$ {valor_cota:.2f}")
-
-    # --- TEXTO WHATSAPP ---
-    data = datetime.now().strftime("%d/%m/%Y")
-    resumo = f"🍖 *CHURRASCO DO {local_selecionado.upper()}* 🍖\n📅 Data: {data}\n\n"
-    resumo += f"💰 *Total: R$ {total:.2f}*\n\n"
-    
-    if vai_guy: resumo += f"🔹 Família Guy: R$ {valor_cota*2:.2f}\n"
-    if vai_thi: resumo += f"🔹 Família Thi: R$ {valor_cota*2:.2f}\n"
-    if vai_paulinho: resumo += f"🔹 Família Paulinho: R$ {valor_cota*2:.2f}\n"
-    if vai_jorge: resumo += f"🔸 Jorge: R$ {valor_cota:.2f}\n"
-    
-    # Inclui convidado no texto do zap
-    if nome_convidado and cota_convidado > 0:
-        resumo += f"👤 {nome_convidado}: R$ {valor_cota * cota_convidado:.2f}\n"
-    
-    resumo += f"\n📍 *Pix para pagamento:*\n{chave_pix}"
-
-    st.subheader("📲 Enviar Resumo")
-    st.text_area("Confira o texto:", resumo, height=220)
-    
-    link_zap = f"https://api.whatsapp.com/send?text={urllib.parse.quote(resumo)}"
-    st.markdown(f"""
-        <a href="{link_zap}" target="_blank" style="text-decoration: none;">
-            <div style="width: 100%; background-color: #25D366; color: white; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
-                🚀 ENVIAR PARA WHATSAPP
-            </div>
-        </a>""", unsafe_allow_html=True)
-else:
-    st.write("Aguardando lançamento de valores...")
+# Cota Convidados
+c1_val = 0
+if nome_conv1 and tipo_conv1 != "Ninguém":
+    c1_val = 1 if "Individual" in tipo_conv
