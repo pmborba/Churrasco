@@ -15,27 +15,33 @@ chaves_cadastradas = {
     "Paulinho": "085.994.129-90"
 }
 
-# --- ESTILO VISUAL ---
+# --- ESTILO VISUAL RESTAURADO (FOTO CENTRALIZADA) ---
 st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("{fundo_url}");
-        background-size: cover;
+        background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("{fundo_url}");
+        background-size: contain;
+        background-repeat: no-repeat;
         background-position: center;
         background-attachment: fixed;
+        background-color: #0e1117;
     }}
     h1, h2, h3, p, label {{
         color: white !important;
         text-shadow: 2px 2px 4px #000000;
     }}
+    /* Campos de entrada com transparência e fonte preta */
     .stCheckbox, div[data-baseweb="select"], .stNumberInput, .stTextArea textarea, .stTextInput input, .stSelectbox div {{
-        background-color: rgba(255, 255, 255, 0.2) !important;
+        background-color: rgba(255, 255, 255, 0.3) !important;
         border-radius: 10px !important;
         color: black !important;
         font-weight: bold !important;
     }}
-    input {{ color: black !important; }}
+    input, textarea {{
+        color: black !important;
+        -webkit-text-fill-color: black !important;
+    }}
     </style>
     """,
     unsafe_allow_html=True
@@ -85,7 +91,6 @@ if vai_thi: cotas += 2
 if vai_paulinho: cotas += 2
 if vai_jorge: cotas += 1
 
-# Cotas Convidados
 c1_val = 0
 if nome_c1 and tipo_c1 != "Ninguém":
     c1_val = 1 if "Individual" in tipo_c1 else 2
