@@ -1,8 +1,3 @@
-import streamlit as st
-
-# Substitua o link abaixo pelo que você copiou no passo anterior
-fundo_url = "https://raw.githubusercontent.com/pmborba/Churrasco/main/WhatsApp%20Image%202026-01-08%20at%2014.55.05.jpeg"
-
 st.markdown(
     f"""
     <style>
@@ -14,18 +9,30 @@ st.markdown(
         background-attachment: fixed;
         background-color: #0e1117;
     }}
-    /* Deixando os textos brancos para aparecerem sobre a foto */
+
+    /* Textos brancos com sombra para leitura */
     h1, h2, h3, p, label, .stMetric {{
         color: white !important;
-    }}
-    /* Adiciona uma sombra para ler melhor sobre a foto */      
         text-shadow: 2px 2px 4px #000000;
     }}
+
+    /* CAMPOS DE ENTRADA: 50% Transparentes */
+    .stNumberInput div div {{
+        background-color: rgba(255, 255, 255, 0.5) !important;
+        color: black !important;
+        border-radius: 10px;
     }}
-    /* Fundo dos campos de entrada levemente escuro para leitura */
-    .stNumberInput div {{
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 5px;
+    
+    /* Ajuste da cor do texto dentro do campo para não sumir */
+    input {{
+        color: black !important;
+        font-weight: bold;
+    }}
+
+    /* Deixar o fundo das áreas de texto e info também transparentes */
+    .stAlert, .stTextArea textarea {{
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        color: white !important;
     }}
     </style>
     """,
@@ -35,7 +42,7 @@ st.markdown(
 st.title("🍖 Rachadinha dos amigos 🍖")
 st.info("Divisão: 3 Famílias (2 cotas cada) + Jorge (1 cota) = 7 cotas")
 
-# Lista de itens conforme solicitado
+# Lista de itens
 itens = [
     "Carne", "Pão de alho", "Linguiça", "Cerveja", 
     "Jurupinga", "Vodka", "Fruta", "Carvão", "Gelo"
@@ -46,6 +53,7 @@ gastos = {}
 # Criando os campos de entrada
 st.subheader("📝 Lançar Valores")
 for item in itens:
+    # Usei o label do campo para os gastos
     gastos[item] = st.number_input(f"{item} (R$)", min_value=0.0, value=0.0, step=5.0, format="%.2f")
 
 # Cálculos
