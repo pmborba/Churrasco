@@ -66,14 +66,12 @@ with col_f2:
 st.markdown("---")
 st.write("👤 **Adicionar Convidados?**")
 
-# Convidado 1
 col_c1a, col_c1b = st.columns([2, 1])
 with col_c1a:
     nome_c1 = st.text_input("Nome do convidado 1:", key="nc1")
 with col_c1b:
     tipo_c1 = st.selectbox("Cota 1:", ["Ninguém", "Individual (1 cota)", "Casal (2 cotas)"], key="tc1")
 
-# Convidado 2
 col_c2a, col_c2b = st.columns([2, 1])
 with col_c2a:
     nome_c2 = st.text_input("Nome do convidado 2:", key="nc2")
@@ -87,7 +85,6 @@ if vai_thi: cotas += 2
 if vai_paulinho: cotas += 2
 if vai_jorge: cotas += 1
 
-# Cotas dos Convidados
 c1_val = 0
 if nome_c1 and tipo_c1 != "Ninguém":
     c1_val = 1 if "Individual" in tipo_c1 else 2
@@ -115,7 +112,6 @@ if total > 0 and cotas > 0:
     st.divider()
     st.metric("TOTAL GERAL", f"R$ {total:.2f}")
 
-    # Blocos de resultado todos em AZUL (st.info)
     res1, res2 = st.columns(2)
     with res1:
         if vai_guy: st.info(f"Família Guy: R$ {valor_cota*2:.2f}")
@@ -131,9 +127,9 @@ if total > 0 and cotas > 0:
     resumo = f"🍖 *CHURRASCO DO {local_selecionado.upper()}* 🍖\n📅 Data: {data}\n\n"
     resumo += f"💰 *Total: R$ {total:.2f}*\n\n"
     
-    # Ícones Personalizados
-    if vai_guy: resumo += f"👨‍👩‍👧‍👦+👦🏼👦🏼 Família Guy: R$ {valor_cota*2:.2f}\n"
-    if vai_paulinho: resumo += f"👨‍👩‍👧‍👦+👦🏼 Família Paulinho: R$ {valor_cota*2:.2f}\n"
+    # Ícones simplificados apenas com a família
+    if vai_guy: resumo += f"👨‍👩‍👧‍👦 Família Guy: R$ {valor_cota*2:.2f}\n"
+    if vai_paulinho: resumo += f"👨‍👩‍👧‍👦 Família Paulinho: R$ {valor_cota*2:.2f}\n"
     if vai_thi: resumo += f"👨‍👩‍👧‍👧 Família Thi: R$ {valor_cota*2:.2f}\n"
     if vai_jorge: resumo += f"❓ Jorge: R$ {valor_cota:.2f}\n"
     
@@ -148,9 +144,4 @@ if total > 0 and cotas > 0:
     link_zap = f"https://api.whatsapp.com/send?text={urllib.parse.quote(resumo)}"
     st.markdown(f"""
         <a href="{link_zap}" target="_blank" style="text-decoration: none;">
-            <div style="width: 100%; background-color: #25D366; color: white; padding: 15px; text-align: center; border-radius: 10px; font-weight: bold; font-size: 18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
-                🚀 ENVIAR PARA WHATSAPP
-            </div>
-        </a>""", unsafe_allow_html=True)
-else:
-    st.write("Aguardando lançamento de valores...")
+            <div style="width: 100%; background-color: #25D366;
