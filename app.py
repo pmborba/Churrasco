@@ -23,7 +23,7 @@ st.markdown(
 
     /* CAMPOS DE ENTRADA: 70% Transparentes */
     .stNumberInput div div {{
-        background-color: rgba(255, 255, 255, 0.7) !important;
+        background-color: rgba(255, 255, 255, 0.3) !important;
         color: black !important;
         border-radius: 10px;
     }}
