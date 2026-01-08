@@ -86,7 +86,7 @@ if total_geral > 0:
     resumo_zap += f"👨‍👩‍👧‍👦 Família (Casal): R$ {cota*2:.2f}\n"
     resumo_zap += f"👤 Jorge: R$ {cota:.2f}\n\n"
     resumo_zap += f"📍 Segue pix para pagamento:\n"
-    resumo_zap += "SUA_CHAVE_PIX_AQUI" 
+    resumo_zap += "" 
 
     st.subheader("📲 Resumo para Enviar")
     st.text_area(label="Texto pronto para o grupo:", value=resumo_zap, height=220)
