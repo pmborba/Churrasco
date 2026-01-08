@@ -9,6 +9,7 @@ st.markdown(
     .stApp {{
         background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("{fundo_url}");
         background-size: contain;
+        background-repeat: no-repeat;
         background-position: center;
         background-attachment: fixed;
     }}
@@ -26,7 +27,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title("🍖 Rachadinha dos amigos")
+st.title("🍖 Rachadinha dos amigos 🍖")
 st.info("Divisão: 3 Famílias (2 cotas cada) + Jorge (1 cota) = 7 cotas")
 
 # Lista de itens conforme solicitado
