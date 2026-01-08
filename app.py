@@ -3,7 +3,7 @@ import streamlit as st
 # Configuração da página
 st.set_page_config(page_title="Churrasco 2026", page_icon="🍖")
 
-st.title("🍖 Calculadora de Churrasco")
+st.title("🍖 Rachadinha dos amigos")
 st.info("Divisão: 3 Famílias (2 cotas cada) + Jorge (1 cota) = 7 cotas")
 
 # Lista de itens conforme solicitado
